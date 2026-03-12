@@ -1,6 +1,5 @@
 sync && echo 3 | tee /proc/sys/vm/drop_caches && \
   vllm serve \
-    --model Qwen/Qwen3-Coder-Next \
     --model RedHatAI/Qwen3-Coder-Next-NVFP4 \
     --kv-cache-dtype fp8_e4m3 \
     --max-model-len 185000 \

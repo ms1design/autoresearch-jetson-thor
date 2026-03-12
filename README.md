@@ -24,6 +24,15 @@ By design, training runs for a **fixed 5-minute time budget** (wall clock, exclu
 
 If you are new to neural networks, this ["Dummy's Guide"](https://x.com/hooeem/status/2030720614752039185) looks pretty good for a lot more context.
 
+## Table of Contents
+
+- [Quick start (Jetson Thor)](#quick-start-jetson-thor)
+- [Running the agent](#running-the-agent)
+- [Project structure](#project-structure)
+- [Docker Setup](#docker-setup)
+- [Design choices](#design-choices)
+- [Platform support](#platform-support)
+
 ## Quick start (Jetson Thor)
 
 **Requirements:** Jetson Thor (SM_110, JetPack 7.x, SBSA aarch64), Python 3.12, [uv](https://docs.astral.sh/uv/).
@@ -61,6 +70,25 @@ prepare.py      — constants, data prep + runtime utilities (do not modify)
 train.py        — model, optimizer, training loop (agent modifies this)
 program.md      — agent instructions
 pyproject.toml  — dependencies
+```
+
+## Docker Setup
+
+For running the training workload in Docker containers:
+
+**[docs/docker.md](docs/docker.md)** — Complete Docker setup guide with:
+- Single command launcher (`./run.sh`)
+- vLLM inference + training services
+- Pre-built Docker image with synced dependencies
+- Quick start examples
+
+### Quick Docker Start
+
+```bash
+./run.sh build          # Build training Docker image
+./run.sh train          # Run training in container
+./run.sh vllm           # Run vLLM inference server
+./run.sh both           # Run both services
 ```
 
 ## Design choices

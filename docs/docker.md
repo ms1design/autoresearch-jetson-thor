@@ -42,27 +42,27 @@ This builds the training Docker image with all dependencies synced.
 ./run.sh stop
 ```
 
-### Check Status
+## Docker Compose
 
+### Build
 ```bash
-./run.sh ps
-./run.sh logs
+docker compose build train
 ```
 
-## Docker Compose Services
+### Start vLLM
+```bash
+docker compose up -d vllm
+```
 
-### vLLM Service
-- Image: `nvcr.io/nvidia/vllm:26.02-py3`
-- Runs on port `${VLLM_MAIN_SERVER_PORT:-8000}`
-- Models: `Qwen/Qwen3-Coder-Next` (default)
-- Quantized model: `RedHatAI/Qwen3-Coder-Next-NVFP4` (default)
-- GPU: All available with CUDA 13.0
+### Start Training
+```bash
+docker compose up train
+```
 
-### Training Service
-- Built from `Dockerfile` in this directory
-- Mounts project directory to `/workspace`
-- Environment is pre-synced at build time
-- Runs with `uv run <command>` via entrypoint
+### View Logs
+```bash
+docker compose logs -f
+```
 
 ## Environment Variables
 
@@ -89,28 +89,6 @@ data/
 │   └── triton-cache/     # Triton cache
 └── training/       # Training specific
     └── cache/      # Training cache
-```
-
-## Running Commands Manually
-
-### Build
-```bash
-docker compose -f docker-compose.yaml build train
-```
-
-### Start vLLM
-```bash
-docker compose -f docker-compose.yaml up -d vllm
-```
-
-### Start Training
-```bash
-docker compose -f docker-compose.yaml up -d train
-```
-
-### View Logs
-```bash
-docker compose -f docker-compose.yaml logs -f
 ```
 
 ## Notes
