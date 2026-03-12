@@ -1,6 +1,6 @@
 services:
   # ==================================
-  # MAIN MODEL
+  # MAIN MODEL (vLLM)
   # ==================================
   vllm:
     image: nvcr.io/nvidia/vllm:26.02-py3
@@ -71,6 +71,61 @@ services:
       timeout: 5s
       retries: 5
       start_period: 750s
+
+  # ==================================
+  # TRAINING SERVICE
+  # ==================================
+  train:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      tags:
+        - narandill/autoresearch-jetson-thor:latest
+    container_name: train
+    hostname: train
+    init: false
+    stdin_open: true
+    tty: true
+    ipc: host
+    runtime: nvidia
+    restart: no
+    privileged: true
+    user: "0:0"
+    mem_swappiness: 0
+    ulimits:
+      memlock: -1
+      stack: 67108864
+      nofile:
+        soft: 65536
+        hard: 65536
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    environment:
+      DO_NOT_TRACK: 1
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: compute,utility
+      CUDA_VISIBLE_DEVICES: 0
+      PYTHONUNBUFFERED: 1
+      HF_TOKEN: ${HF_TOKEN:-}
+    volumes:
+      - .:/workspace
+      - ../data/models:/data/models
+      - ../data/training/cache:/data/cache
+      - /dev/shm:/dev/shm
+      - /etc/nv_tegra_release:/etc/nv_tegra_release
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/machine-id:/etc/machine-id:ro
+    command:
+      - sh
+      - -c
+      - "uv run ${TRAIN_COMMAND:-train.py}"
+    networks:
+      - ai-network
 
 networks:
   ai-network:
