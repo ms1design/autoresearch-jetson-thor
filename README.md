@@ -1,4 +1,4 @@
-# autoresearch
+# autoresearch-jetson-thor
 
 ![teaser](progress.png)
 
