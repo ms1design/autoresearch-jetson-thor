@@ -28,6 +28,7 @@ If you are new to neural networks, this ["Dummy's Guide"](https://x.com/hooeem/s
 
 - [Quick start (Jetson Thor)](#quick-start-jetson-thor)
 - [Running the agent](#running-the-agent)
+- [OpenCode Integration](#opencode-integration)
 - [Project structure](#project-structure)
 - [Docker Setup](#docker-setup)
 - [Design choices](#design-choices)
@@ -63,6 +64,43 @@ Hi have a look at program.md and let's kick off a new experiment! let's do the s
 
 The `program.md` file is essentially a super lightweight "skill".
 
+## OpenCode Integration
+
+This project is integrated with [OpenCode](https://opencode.ai/), an AI coding agent that enables autonomous LLM training research.
+
+**[docs/opencode.md](docs/opencode.md)** — Complete OpenCode integration guide with:
+
+- **Custom Tools**: Train experiments, result analysis, Docker image building
+- **Subagents**: Python coder and arXiv researcher for autonomous research
+- **Agent Collaboration**: python-coder + arxiv-researcher workflow
+
+### Quick OpenCode Start
+
+```bash
+# 1. Install OpenCode
+npm install -g opencode-ai
+
+# 2. Navigate to project and initialize
+cd /path/to/autoresearch-jetson-thor
+opencode
+# In the TUI:
+/init
+
+# 3. Start autonomous research
+# Ask OpenCode to run experiments, find papers, or modify train.py
+```
+
+### Custom Tools (`.opencode/tools/`)
+
+1. **train**: Run training experiments (5-minute time budget)
+2. **analysis**: Analyze results from run.log and results.tsv
+3. **build-image**: Build Docker images with pre-synced dependencies
+
+### Available Subagents (`.opencode/agents/`)
+
+1. **python-coder.json**: Modify train.py for autonomous research experiments
+2. **arxiv-researcher.json**: Find and analyze academic papers from arXiv.org
+
 ## Project structure
 
 ```
@@ -70,6 +108,9 @@ prepare.py      — constants, data prep + runtime utilities (do not modify)
 train.py        — model, optimizer, training loop (agent modifies this)
 program.md      — agent instructions
 pyproject.toml  — dependencies
+AGENTS.md       — project documentation for agents (auto-generated)
+docs/           — documentation including opencode.md
+.opencode/      — OpenCode configuration (tools, agents)
 ```
 
 ## Docker Setup
@@ -90,6 +131,13 @@ For running the training workload in Docker containers:
 ./run.sh vllm           # Run vLLM inference server
 ./run.sh both           # Run both services
 ```
+
+### Docker + OpenCode Integration
+
+The Docker setup integrates seamlessly with OpenCode for autonomous research:
+- **train container**: Pre-syncs dependencies at build time for fast experiments
+- **vllm container**: Serves models for evaluation
+- **Both services**: Can run simultaneously for end-to-end workflows
 
 ## Design choices
 
