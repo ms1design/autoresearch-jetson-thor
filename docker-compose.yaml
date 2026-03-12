@@ -1,0 +1,77 @@
+services:
+  # ==================================
+  # MAIN MODEL
+  # ==================================
+  vllm:
+    image: nvcr.io/nvidia/vllm:26.02-py3
+    container_name: vllm
+    hostname: vllm
+    init: false
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    ipc: host
+    runtime: nvidia
+    restart: no
+    privileged: true
+    user: "0:0"
+    mem_swappiness: 0
+    ulimits:
+      memlock: -1
+      stack: 67108864
+      nofile:
+        soft: 65536
+        hard: 65536
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    environment:
+      DO_NOT_TRACK: 1
+      VLLM_NO_USAGE_STATS: 1
+      VLLM_WORKER_MULTIPROC: 0
+      VLLM_PLUGINS: ""
+      VLLM_CACHE_ROOT: /data/cache
+      VLLM_ASSETS_CACHE: /data/assets
+      VLLM_TUNED_CONFIG_FOLDER: /data/kernels-cache
+      FLASHINFER_JIT_DIR: /data/flashinfer-cache
+      TRITON_CACHE_DIR: /data/triton-cache
+      TIKTOKEN_ENCODINGS_BASE: /data/tiktoken
+      TIKTOKEN_RS_CACHE_DIR: /data/tiktoken
+      VLLM_LOGGING_LEVEL: DEBUG
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: compute,utility,graphics
+      CUDA_VISIBLE_DEVICES: 0
+      PYTHONUNBUFFERED: 1
+      SAFETENSORS_FAST_GPU: 1
+      HF_TOKEN: ${HF_TOKEN:-}
+    volumes:
+      - ./data/models:/data/models
+      - ./scripts:/workspace/scripts
+      - ./data/vllm/cache:/data/cache
+      - ./data/tiktoken:/data/tiktoken
+      - ./data/vllm/kernels-cache:/data/kernels-cache
+      - ./data/vllm/flashinfer-cache:/data/flashinfer-cache
+      - ./data/vllm/triton-cache:/data/triton-cache
+      - /dev/shm:/dev/shm
+      - /etc/nv_tegra_release:/etc/nv_tegra_release
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/machine-id:/etc/machine-id:ro
+    ports:
+      - ${VLLM_MAIN_SERVER_PORT:-8000}:8000/tcp
+    command: ./scripts/vllm_llm_serve.sh ${MAIN_LLM_MODEL:-Qwen/Qwen3-Coder-Next} ${MAIN_LLM_MODEL_QUANT:-RedHatAI/Qwen3-Coder-Next-NVFP4}
+    networks:
+      - ai-network
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://127.0.0.1:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 750s
+
+networks:
+  ai-network:
+    driver: bridge
