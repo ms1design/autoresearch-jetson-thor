@@ -76,11 +76,12 @@ the standard manylinux / pure-Python wheels.
 |---|---|
 | **Available in sbsa/cu130** | `triton==3.5.0` |
 | Role | JIT kernel compiler for `torch.compile` + `flex_attention` |
-| Installed by | `torch` wheel's own deps — not explicitly in pyproject.toml |
+| **Installed by** | **Explicitly in pyproject.toml** |
 | SM_110 support | Confirmed; Triton JIT compiles ptx for SM_110 with cu130 ptxas |
 
-Triton is pulled in as a dep of torch. The sbsa/cu130 index provides the Thor-tuned
-`triton-3.5.0` wheel. No explicit pin needed in pyproject.toml.
+Triton is required for `torch.compile` to work properly. While it's available in the
+sbsa/cu130 index as part of the PyTorch ecosystem, it must be explicitly listed in
+pyproject.toml to ensure it's installed (torch's triton dep is optional).
 
 ### flash-attention
 

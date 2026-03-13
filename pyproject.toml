@@ -28,6 +28,10 @@ dependencies = [
     # [tool.uv.sources] block below and run:
     #   pip install torch==2.9.1 --index-url https://download.pytorch.org/whl/cu130
     "torch==2.10.0",
+    # triton: required for torch.compile (flex_attention) on SM_110
+    # The sbsa/cu130 index provides triton-3.5.0, but it must be explicitly
+    # listed to ensure it's installed (torch's triton dep is optional).
+    "triton==3.5.0",
 ]
 
 [tool.uv]

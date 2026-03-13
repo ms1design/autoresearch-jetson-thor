@@ -20,6 +20,7 @@ dependencies = [
     { name = "rustbpe" },
     { name = "tiktoken" },
     { name = "torch" },
+    { name = "triton" },
 ]
 
 [package.metadata]
@@ -32,6 +33,7 @@ requires-dist = [
     { name = "rustbpe", specifier = ">=0.1.0" },
     { name = "tiktoken", specifier = ">=0.9.0" },
     { name = "torch", specifier = "==2.10.0", index = "https://pypi.jetson-ai-lab.io/sbsa/cu130/+simple/" },
+    { name = "triton", specifier = "==3.5.0" },
 ]
 
 [[package]]
@@ -459,6 +461,15 @@ dependencies = [
 ]
 wheels = [
     { url = "https://pypi.jetson-ai-lab.io/sbsa/cu130/+f/c59/7ddc0c1f8de6c/torch-2.10.0-cp312-cp312-linux_aarch64.whl", hash = "sha256:c597ddc0c1f8de6c54fc7c7c09bfe5f70e04a5024383740e99a02eb13498ced5" },
+]
+
+[[package]]
+name = "triton"
+version = "3.5.0"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/87/9b/30988039e1e84df7554fba24e6a734d2d0e847af33cabdf9b532b3c51456/triton-3.5.0-cp312-cp312-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:7da21fccceafc163e3a5e857abe34351ef76345af06cabf9637a914742671f0b", size = 159946647, upload-time = "2025-10-15T19:15:56.325Z" },
+    { url = "https://files.pythonhosted.org/packages/f5/3a/e991574f3102147b642e49637e0281e9bb7c4ba254edb2bab78247c85e01/triton-3.5.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:c9e71db82261c4ffa3921cd050cd5faa18322d2d405c30eb56084afaff3b0833", size = 170476535, upload-time = "2025-10-13T16:38:05.18Z" },
 ]
 
 [[package]]
