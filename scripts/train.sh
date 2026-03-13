@@ -25,18 +25,14 @@ echo "Starting training container..."
 docker run \
   --name train \
   --hostname train \
-  --init false \
-  --stdin-open \
-  --tty \
+  --init \
+  --interactive \
+  --runtime nvidia \
   --ipc host \
-  --runtime=nvidia \
+  --gpus all \
   --restart=no \
   --privileged \
   --user "0:0" \
-  --mem-swappiness=0 \
-  --ulimit memlock=-1 \
-  --ulimit stack=67108864 \
-  --ulimit nofile=65536:65536 \
   --env DO_NOT_TRACK=1 \
   --env NVIDIA_VISIBLE_DEVICES=all \
   --env NVIDIA_DRIVER_CAPABILITIES=compute,utility \
@@ -44,12 +40,7 @@ docker run \
   --env PYTHONUNBUFFERED=1 \
   --env HF_TOKEN="${HF_TOKEN}" \
   --volume "$(pwd):/workspace" \
-  --volume "../data/models:/data/models" \
-  --volume "../data/training/cache:/data/cache" \
   --volume /dev/shm:/dev/shm \
-  --volume /etc/nv_tegra_release:/etc/nv_tegra_release \
-  --volume /etc/localtime:/etc/localtime:ro \
-  --volume /etc/machine-id:/etc/machine-id:ro \
   --network host \
   narandill/autoresearch-jetson-thor:latest \
   sh -c 'uv run "${TRAIN_COMMAND:-train.py}" 2>&1 | tee /workspace/logs/run.log'

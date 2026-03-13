@@ -2,16 +2,11 @@ import { tool } from "@opencode-ai/plugin"
 
 export default tool({
   description: "Build the training Docker image for the Jetson Thor autoresearch setup. This tool builds a pre-configured Docker image with all dependencies synced and ready for training. Use this tool instead of running docker commands directly.",
-  args: {
-    tag: tool.schema.string().describe("Docker image tag (default: latest)").optional(),
-    force_build: tool.schema.boolean().describe("Force rebuild even if image exists (default: false)").optional(),
-    verbose: tool.schema.boolean().describe("Show verbose output during build (default: false)").optional(),
-  },
   async execute(args, context) {
     const worktree = context.worktree
-    const tag = args.tag || "latest"
-    const forceBuild = args.force_build || false
-    const verbose = args.verbose || false
+    const tag = "latest"
+    const forceBuild = false
+    const verbose = false
     
     try {
       // Check if image already exists

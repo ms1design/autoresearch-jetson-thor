@@ -19,5 +19,10 @@ AGENTS.md
 # Experimental code/artifacts
 dev/
 
+.ruff_cache
+
 # Results file
 results.tsv
+
+# Training logs
+logs/
