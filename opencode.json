@@ -5,9 +5,11 @@
   "experimental": {
     "openTelemetry": false
   },
+  "default_agent": "Auto Researcher",
   "mcp": {
     "arxiv": {
       "type": "local",
+      "enabled": true,
       "command": ["npx", "-y", "arxiv-mcp-server"]
     }
   }
