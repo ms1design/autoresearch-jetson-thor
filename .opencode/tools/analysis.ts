@@ -2,14 +2,15 @@ import { tool } from "@opencode-ai/plugin"
 import path from "path"
 
 export default tool({
-  description: "Analyze training results from the Jetson Thor autoresearch setup. This tool parses training logs, extracts key metrics (val_bpb, memory usage, training time), and provides a comprehensive analysis of experiment results. Use this tool to verify experiment results instead of parsing logs manually.",
+  description: "Analyze training results from the Jetson Thor autoresearch setup. This tool parses training logs (from .logs/run.log), extracts key metrics (val_bpb, memory usage, training time), and provides comprehensive analysis of experiment results. Use this tool to verify experiment results instead of parsing logs manually.",
   args: {
-    log_file: tool.schema.string().describe("Path to the training log file (e.g., run.log)").optional(),
+    log_file: tool.schema.string().describe("Path to the training log file (e.g., logs/run.log)").optional(),
     results_file: tool.schema.string().describe("Path to results.tsv file for comparative analysis").optional(),
   },
   async execute(args, context) {
     const worktree = context.worktree
-    const logFile = args.log_file || path.join(worktree, "run.log")
+    // Default log file path - logs are saved in ./logs/ directory
+    const logFile = args.log_file || path.join(worktree, "logs", "run.log")
     const resultsFile = args.results_file || path.join(worktree, "results.tsv")
     
     let logAnalysis = null

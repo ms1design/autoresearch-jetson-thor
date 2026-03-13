@@ -20,6 +20,8 @@ docker compose build train
 
 # Launch the training container using docker run directly
 echo "Starting training container..."
+# Run training and capture output to logs/run.log inside the container
+# The output will be visible in .logs/run.log in the project directory
 docker run \
   --name train \
   --hostname train \
@@ -50,4 +52,4 @@ docker run \
   --volume /etc/machine-id:/etc/machine-id:ro \
   --network host \
   narandill/autoresearch-jetson-thor:latest \
-  uv run "${TRAIN_COMMAND:-train.py}"
+  sh -c 'uv run "${TRAIN_COMMAND:-train.py}" 2>&1 | tee /workspace/logs/run.log'
