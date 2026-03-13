@@ -22,21 +22,21 @@ Once you get confirmation, kick off the experimentation.
 
 Each experiment runs on a single GPU. The training script runs for a **fixed time budget of 5 minutes** (wall clock training time, excluding startup/compilation).
 
-**Use the OpenCode `train` tool** to run experiments - do NOT use docker compose directly. The `train` tool:
+**Use the OpenCode `autoresearch_train` tool** to run experiments - do NOT use docker compose directly. The `autoresearch_train` tool:
 - Executes training with the correct Docker configuration
 - Saves output to `logs/run.log` automatically
 - Returns key metrics (val_bpb, memory usage, training time)
 
 **What you CAN do:**
 - Modify `train.py` — this is the only file you edit. Everything is fair game: model architecture, optimizer, hyperparameters, training loop, batch size, model size, etc.
-- Use the `train` OpenCode tool to run experiments
-- Use the `analysis` OpenCode tool to verify results
+- Use the `autoresearch_train` OpenCode tool to run experiments
+- Use the `autoresearch_analyse` OpenCode tool to verify results
 
 **What you CANNOT do:**
 - Modify `prepare.py`. It is read-only. It contains the fixed evaluation, data loading, tokenizer, and training constants (time budget, sequence length, etc).
 - Install new packages or add dependencies. You can only use what's already in `pyproject.toml`.
 - Modify the evaluation harness. The `evaluate_bpb` function in `prepare.py` is the ground truth metric.
-- Use `docker compose` or `docker run` directly - always use the OpenCode `train` tool instead
+- Use `docker compose` or `docker run` directly - always use the OpenCode `autoresearch_train` tool instead
 
 **The goal is simple: get the lowest val_bpb.** Since the time budget is fixed, you don't need to worry about training time — it's always 5 minutes. Everything is fair game: change the architecture, the optimizer, the hyperparameters, the batch size, the model size. The only constraint is that the code runs without crashing and finishes within the time budget.
 
@@ -48,7 +48,7 @@ Each experiment runs on a single GPU. The training script runs for a **fixed tim
 
 ## Output format
 
-Once the `train` tool finishes, it returns a summary like this:
+Once the `autoresearch_train` tool finishes, it returns a summary like this:
 
 ```
 val_bpb:          0.997900
@@ -56,7 +56,7 @@ training_seconds: 300.1
 peak_memory_mb:   45060.2
 ```
 
-The `analysis` tool can also be used to verify results from `logs/run.log` and `results.tsv`.
+The `autoresearch_analyse` tool can also be used to verify results from `logs/run.log` and `results.tsv`.
 
 ## Logging results
 
@@ -92,8 +92,8 @@ The experiment runs on a dedicated branch (e.g. `autoresearch/mar5` or `autorese
 
 This project uses OpenCode tools for orchestration. You MUST use these tools instead of docker commands:
 
-- **train**: Run training experiments (5-minute time budget). Saves output to logs/run.log automatically.
-- **analysis**: Analyze results from logs/run.log and results.tsv for comparative analysis.
+- **autoresearch_train**: Run training experiments (5-minute time budget). Saves output to logs/run.log automatically.
+- **autoresearch_analyse**: Analyze results from logs/run.log and results.tsv for comparative analysis.
 
 ### Experiment Loop
 
@@ -102,8 +102,8 @@ LOOP FOREVER:
 1. Look at the git state: the current branch/commit we're on
 2. Tune `train.py` with an experimental idea by directly hacking the code.
 3. git commit
-4. **Use the `train` OpenCode tool** to run the experiment (it saves output to logs/run.log automatically)
-5. **Use the `analysis` OpenCode tool** to verify results from logs/run.log
+4. **Use the `autoresearch_train` OpenCode tool** to run the experiment (it saves output to logs/run.log automatically)
+5. **Use the `autoresearch_analyse` OpenCode tool** to verify results from logs/run.log
 6. If the analysis shows the run crashed, read the error details and attempt a fix. If you can't get things to work after more than a few attempts, give up.
 7. Record the results in the tsv (NOTE: do not commit the results.tsv file, leave it untracked by git)
 8. If val_bpb improved (lower), you "advance" the branch, keeping the git commit

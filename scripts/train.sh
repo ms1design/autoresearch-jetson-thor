@@ -14,6 +14,9 @@ cd "$SCRIPT_DIR/.."
 # Read environment variables
 export HF_TOKEN=${HF_TOKEN:-}
 
+docker stop train || true
+docker rm train || true
+
 # Build image if needed
 echo "Building training Docker image if needed..."
 docker compose build train

@@ -105,8 +105,8 @@ opencode
 
 ### Custom Tools (`.opencode/tools/`)
 
-1. **train**: Run training experiments (5-minute time budget) using `docker compose`
-2. **analysis**: Analyze results from run.log and results.tsv
+1. **autoresearch_train**: Run training experiments (5-minute time budget) using `docker compose`
+2. **autoresearch_analyse**: Analyze results from run.log and results.tsv
 
 ### Available Subagents (`.opencode/agents/`)
 
