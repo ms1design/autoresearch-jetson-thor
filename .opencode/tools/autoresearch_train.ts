@@ -27,7 +27,7 @@ export default tool({
     
     return new Promise((resolve) => {
       // Run train.py and redirect output to logs/training.log
-      const proc = exec("uv run train.py >> logs/training.log 2>&1", {
+      const proc = exec("./train.sh >> logs/training.log 2>&1", {
         cwd: worktree,
         maxBuffer: 1024 * 1024 * 1024, // 1GB buffer
         env: { ...process.env }

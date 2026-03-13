@@ -17,7 +17,7 @@ os.environ["TORCH_CUDA_ARCH_LIST"] = "11.0a"
 # ---------------------------------------------------------------------------
 # Physical pool is 128 GB LPDDR5X shared between CPU and GPU.
 # Reserve ~2 GB headroom for OS / CPU-side allocations.
-UNIFIED_MEMORY_LIMIT_GB = 126
+UNIFIED_MEMORY_LIMIT_GB = 50
 
 import gc
 import math
