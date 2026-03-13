@@ -3,6 +3,6 @@
 set -euo pipefail
 
 sync
-sudo sysctl -w vm.drop_caches=3
+sudo -n sysctl -w vm.drop_caches=3
 
-uv run train.py || sudo sysctl -w vm.drop_caches=3
+uv run train.py || sudo -n sysctl -w vm.drop_caches=3

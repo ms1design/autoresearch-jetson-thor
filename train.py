@@ -817,6 +817,9 @@ steady_state_mfu = (
     else 0
 )
 peak_vram_mb = torch.cuda.max_memory_allocated() / 1024 / 1024
+# On Jetson devices, max_memory_allocated can return negative values due to unified memory management
+# Use absolute value to report the actual memory usage
+peak_vram_mb = abs(peak_vram_mb)
 
 print("---")
 print(f"val_bpb:          {val_bpb:.6f}")

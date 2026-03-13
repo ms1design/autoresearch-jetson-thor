@@ -15,7 +15,8 @@ else
 fi
 
 echo "==> Adding sudoers permissions for train-commands..."
-echo "${USER} ALL=(ALL) NOPASSWD: /usr/bin/sysctl, /bin/sync" | sudo tee /etc/sudoers.d/train-commands
+echo "${USER} ALL=(ALL) NOPASSWD: /usr/sbin/sysctl -w vm.drop_caches=3" | sudo tee /etc/sudoers.d/train-commands
+sudo visudo -c -f /etc/sudoers.d/train-commands
 
 echo "==> Syncing dependencies..."
 uv sync
