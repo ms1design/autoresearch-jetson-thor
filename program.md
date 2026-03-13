@@ -20,19 +20,23 @@ Once you get confirmation, kick off the experimentation.
 
 ## Experimentation
 
-Each experiment runs on a single GPU. The training script runs for a **fixed time budget of 5 minutes** (wall clock training time, excluding startup/compilation). You launch it using Docker Compose:
+Each experiment runs on a single GPU. The training script runs for a **fixed time budget of 5 minutes** (wall clock training time, excluding startup/compilation).
 
-```bash
-docker compose up train    # Run training in container
-```
+**Use the OpenCode `train` tool** to run experiments - do NOT use docker compose directly. The `train` tool:
+- Executes training with the correct Docker configuration
+- Saves output to `logs/run.log` automatically
+- Returns key metrics (val_bpb, memory usage, training time)
 
 **What you CAN do:**
 - Modify `train.py` — this is the only file you edit. Everything is fair game: model architecture, optimizer, hyperparameters, training loop, batch size, model size, etc.
+- Use the `train` OpenCode tool to run experiments
+- Use the `analysis` OpenCode tool to verify results
 
 **What you CANNOT do:**
 - Modify `prepare.py`. It is read-only. It contains the fixed evaluation, data loading, tokenizer, and training constants (time budget, sequence length, etc).
 - Install new packages or add dependencies. You can only use what's already in `pyproject.toml`.
 - Modify the evaluation harness. The `evaluate_bpb` function in `prepare.py` is the ground truth metric.
+- Use `docker compose` or `docker run` directly - always use the OpenCode `train` tool instead
 
 **The goal is simple: get the lowest val_bpb.** Since the time budget is fixed, you don't need to worry about training time — it's always 5 minutes. Everything is fair game: change the architecture, the optimizer, the hyperparameters, the batch size, the model size. The only constraint is that the code runs without crashing and finishes within the time budget.
 
@@ -44,26 +48,15 @@ docker compose up train    # Run training in container
 
 ## Output format
 
-Once the script finishes it prints a summary like this:
+Once the `train` tool finishes, it returns a summary like this:
 
 ```
----
 val_bpb:          0.997900
 training_seconds: 300.1
-total_seconds:    325.9
-peak_vram_mb:     45060.2
-mfu_percent:      39.80
-total_tokens_M:   499.6
-num_steps:        953
-num_params_M:     50.3
-depth:            8
+peak_memory_mb:   45060.2
 ```
 
-Note that the script is configured to always stop after 5 minutes, so depending on the computing platform of this computer the numbers might look different. You can extract the key metric from the log file:
-
-```
-grep "^val_bpb:" run.log
-```
+The `analysis` tool can also be used to verify results from `logs/run.log` and `results.tsv`.
 
 ## Logging results
 
@@ -95,26 +88,30 @@ d4e5f6g	0.000000	0.0	crash	double model width (OOM)
 
 The experiment runs on a dedicated branch (e.g. `autoresearch/mar5` or `autoresearch/mar5-gpu0`).
 
+### OpenCode Tools
+
+This project uses OpenCode tools for orchestration. You MUST use these tools instead of docker commands:
+
+- **train**: Run training experiments (5-minute time budget). Saves output to logs/run.log automatically.
+- **analysis**: Analyze results from logs/run.log and results.tsv for comparative analysis.
+
+### Experiment Loop
+
 LOOP FOREVER:
 
 1. Look at the git state: the current branch/commit we're on
 2. Tune `train.py` with an experimental idea by directly hacking the code.
 3. git commit
-4. Run the experiment using Docker Compose:
-```bash
-docker compose up train > run.log 2>&1    # Run in container, redirect output
-```
-5. Read out the results: `grep "^val_bpb:\|^peak_vram_mb:" run.log`
-6. If the grep output is empty, the run crashed. Run `tail -n 50 run.log` to read the Python stack trace and attempt a fix. If you can't get things to work after more than a few attempts, give up.
+4. **Use the `train` OpenCode tool** to run the experiment (it saves output to logs/run.log automatically)
+5. **Use the `analysis` OpenCode tool** to verify results from logs/run.log
+6. If the analysis shows the run crashed, read the error details and attempt a fix. If you can't get things to work after more than a few attempts, give up.
 7. Record the results in the tsv (NOTE: do not commit the results.tsv file, leave it untracked by git)
 8. If val_bpb improved (lower), you "advance" the branch, keeping the git commit
 9. If val_bpb is equal or worse, you git reset back to where you started
 
 The idea is that you are a completely autonomous researcher trying things out. If they work, keep. If they don't, discard. And you're advancing the branch so that you can iterate. If you feel like you're getting stuck in some way, you can rewind but you should probably do this very very sparingly (if ever).
 
-**Timeout**: Each experiment should take ~5 minutes total (+ a few seconds for startup and eval overhead). If a run exceeds 10 minutes, kill it and treat it as a failure (discard and revert). You can monitor running containers with `docker compose ps` and stop them with `docker compose down` if needed.
-
-**Crashes**: If a run crashes (OOM, or a bug, or etc.), use your judgment: If it's something dumb and easy to fix (e.g. a typo, a missing import), fix it and re-run. If the idea itself is fundamentally broken, just skip it, log "crash" as the status in the tsv, and move on. To stop a stuck container, use `docker compose down` or `docker stop train`.
+**Timeout**: Each experiment should take ~5 minutes total (+ a few seconds for startup and eval overhead). If a run exceeds 10 minutes, the `train` tool will timeout and return an error. Treat it as a failure (discard and revert).
 
 **NEVER STOP**: Once the experiment loop has begun (after the initial setup), do NOT pause to ask the human if you should continue. Do NOT ask "should I keep going?" or "is this a good stopping point?". The human might be asleep, or gone from a computer and expects you to continue working *indefinitely* until you are manually stopped. You are autonomous. If you run out of ideas, think harder — read papers referenced in the code, re-read the in-scope files for new angles, try combining previous near-misses, try more radical architectural changes. The loop runs until the human interrupts you, period.
 
