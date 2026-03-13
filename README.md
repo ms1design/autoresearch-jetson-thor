@@ -121,7 +121,6 @@ pyproject.toml  — dependencies
 setup.sh        — installation script (installs project dependencies on host)
 AGENTS.md       — project documentation for agents (auto-generated)
 .opencode/      — OpenCode configuration (tools, agents)
-```
 prepare.py      — constants, data prep + runtime utilities (do not modify)
 train.py        — model, optimizer, training loop (agent modifies this)
 program.md      — agent instructions
