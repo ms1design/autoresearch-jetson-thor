@@ -2,7 +2,7 @@ import { tool } from "@opencode-ai/plugin"
 import path from "path"
 
 export default tool({
-  description: "Run training experiments with the Jetson Thor autoresearch setup. This tool executes the training script for a fixed 5-minute time budget and captures the results. Use this tool instead of running docker commands directly. Output is automatically saved to .logs/run.log for analysis.",
+  description: "Run training experiments with the Jetson Thor autoresearch setup. This tool executes the training script for a fixed 5-minute time budget and captures the results. Use this tool instead of running docker commands directly. Output is automatically saved to logs/run.log for analysis.",
   args: {
     experiment_name: tool.schema.string().describe("Name of the experiment for logging purposes"),
     description: tool.schema.string().describe("Description of what changes or parameters are being tested in this experiment"),
