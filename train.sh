@@ -37,6 +37,8 @@ LOG_PATH="logs/training.log"
 # Ensure logs directory exists
 mkdir -p logs
 
+# Clear log file before each training
+> "$LOG_PATH"
 # Run training and capture output to log file (also show on stdout)
 sync
 sudo -n sysctl -w vm.drop_caches=3 > /dev/null 2>&1
