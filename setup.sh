@@ -7,7 +7,6 @@ set -euo pipefail
 
 PYTHON=${PYTHON:-python3.12}
 
-# Check if .venv already exists (e.g., from Docker build) and skip venv creation
 if [ ! -d .venv ]; then
     echo "==> Creating uv virtual environment (.venv, ${PYTHON})..."
     uv venv --python "$PYTHON"
@@ -15,6 +14,10 @@ else
     echo "==> Virtual environment already exists, skipping creation..."
 fi
 
-echo "==> Syncing dependencies (torch==2.10.0 from NVIDIA sbsa/cu130)..."
-# pyproject.toml routes torch to nvidia-sbsa-cu130 via [tool.uv.sources].
+echo "==> Adding sudoers permissions for train-commands..."
+echo "${USER} ALL=(ALL) NOPASSWD: /usr/bin/sysctl, /bin/sync" | sudo tee /etc/sudoers.d/train-commands
+
+echo "==> Syncing dependencies..."
 uv sync
+
+echo "==> Sudoers updated. Please reload sudo with 'sudo systemctl reload sudo' or logout/login for changes to take effect."
