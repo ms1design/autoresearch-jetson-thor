@@ -83,7 +83,7 @@ This project is integrated with [OpenCode](https://opencode.ai/), an AI coding a
 
 **[docs/opencode.md](docs/opencode.md)** — Complete OpenCode integration guide with:
 
-- **Custom Tools**: Train experiments, result analysis, Docker image building
+- **Custom Tools**: Train experiments, result analysis
 - **Subagents**: Python coder and arXiv researcher for autonomous research
 - **Agent Collaboration**: python-coder + arxiv-researcher workflow
 
@@ -107,7 +107,6 @@ opencode
 
 1. **train**: Run training experiments (5-minute time budget) using `docker compose`
 2. **analysis**: Analyze results from run.log and results.tsv
-3. **build-image**: Build Docker images with pre-synced dependencies using `docker compose build`
 
 ### Available Subagents (`.opencode/agents/`)
 

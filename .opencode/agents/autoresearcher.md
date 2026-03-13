@@ -3,12 +3,10 @@ name: Auto Researcher
 description: Orchestrator agent that manages other subagents for autonomous LLM training research. This agent coordinates python-coder, arxiv-researcher, and web-researcher to execute research experiments efficiently.
 mode: primary
 tools:
-  read: true
   edit: false
-  bash: false
   webfetch: false
   searchweb: false
-  analysis: false
+  analysis: true
   train: false
 ---
 
