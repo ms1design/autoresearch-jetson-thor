@@ -5,6 +5,7 @@ set -euo pipefail
 # Parse arguments
 EXPERIMENT_NAME=""
 DESCRIPTION=""
+QUIET=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -15,6 +16,10 @@ while [[ $# -gt 0 ]]; do
         --description)
             DESCRIPTION="$2"
             shift 2
+            ;;
+        --quiet)
+            QUIET=true
+            shift
             ;;
         *)
             echo "Unknown option: $1"
@@ -38,8 +43,15 @@ sudo -n sysctl -w vm.drop_caches=3 > /dev/null 2>&1
 
 # Run training, show output AND capture it to log file
 set +e
-uv run train.py 2>&1 | tee -a "$LOG_PATH"
-TRAIN_EXIT_CODE=$?
+if [ "$QUIET" = true ]; then
+    # Suppress all output when --quiet flag is set
+    uv run train.py > /dev/null 2>&1
+    TRAIN_EXIT_CODE=$?
+else
+    # Run with output to both console and log file
+    uv run train.py 2>&1 | tee -a "$LOG_PATH"
+    TRAIN_EXIT_CODE=$?
+fi
 set -e
 
 # Clear memory after training (success or failure)

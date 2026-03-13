@@ -4,7 +4,7 @@ import * as path from "path"
 import * as childProcess from "child_process"
 
 export default tool({
-  description: "Triage latest training results. Adds experiment metrics to results.tsv with the specified status (keep, discard, or crash). Reads experiment_name and description from logs/training.log.",
+  description: "Triage latest training results. Adds experiment metrics to results.tsv with the specified status (keep, discard, or crash).",
   args: {
     status: tool.schema.string().describe("Status for this experiment: 'keep', 'discard', or 'crash'"),
   },

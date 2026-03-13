@@ -2,7 +2,7 @@ import { tool } from "@opencode-ai/plugin"
 import { exec } from "child_process"
 
 export default tool({
-  description: "Run training experiment with the Jetson Thor autoresearch setup. This tool executes training with the provided experiment name and description. Results must be manually added to results.tsv using autoresearch_triage tool.",
+  description: "Run training experiment with the Jetson Thor autoresearch setup. This tool executes training with the provided experiment name and description.",
   args: {
     experiment_name: tool.schema.string().describe("Name of the experiment for logging purposes"),
     description: tool.schema.string().describe("Description of what changes or parameters are being tested in this experiment"),
@@ -12,7 +12,7 @@ export default tool({
     
     return new Promise((resolve) => {
       // Run train.sh with experiment name and description arguments
-      const command = `./train.sh --experiment-name "${args.experiment_name}" --description "${args.description.replace(/"/g, '\\"')}"`;
+      const command = `./train.sh --experiment-name "${args.experiment_name}" --description "${args.description.replace(/"/g, '\\"')}" --quiet`;
       const proc = exec(command, {
         cwd: worktree,
         maxBuffer: 1024 * 1024 * 1024, // 1GB buffer
@@ -34,9 +34,9 @@ export default tool({
       
       proc.on("close", (code) => {
         if (code === 0) {
-          resolve(`Training completed. Check logs/training.log for results. Use autoresearch_triage to add results to results.tsv.`)
+          resolve(`Training completed. Use autoresearch_analyse to extract metrics, then use autoresearch_triage to triage the experiment results.`)
         } else {
-          resolve(`Training failed with exit code ${code}. Check logs/training.log for details.`)
+          resolve(`Training failed with exit code ${code}. Check logs/training.log for details, then use autoresearch_triage to triage the experiment results.`)
         }
       })
       

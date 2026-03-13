@@ -5,6 +5,7 @@ Usage: source .venv/bin/activate && python train.py
 """
 
 import os
+import sys
 
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = (
     "backend:cudaMallocAsync,expandable_segments:False"
@@ -20,6 +21,11 @@ DESCRIPTION = os.environ.get("DESCRIPTION", "")
 
 assert EXPERIMENT_NAME
 assert DESCRIPTION
+
+print(f"experiment_name:  {EXPERIMENT_NAME}")
+print(f"description:      {DESCRIPTION}")
+
+sys.exit(0)
 
 # ---------------------------------------------------------------------------
 # Jetson AGX Thor unified memory limit
