@@ -42,13 +42,16 @@ If you are new to neural networks, this ["Dummy's Guide"](https://x.com/hooeem/s
 # 1. Install uv project manager (if you don't already have it)
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# 2. Install dependencies (uses sbsa/cu130 index for Jetson Thor)
-uv sync
+# 2. Install project dependencies (for host-based development)
+bash setup.sh
 
-# 3. Download data and train tokenizer (one-time, ~2 min)
+# 3. Install arxiv-mcp-server (for agent research capabilities - on host)
+uv tool install arxiv-mcp-server
+
+# 4. Download data and train tokenizer (one-time, ~2 min)
 uv run prepare.py
 
-# 4. Manually run a single training experiment (~5 min)
+# 5. Manually run a single training experiment (~5 min)
 uv run train.py
 ```
 
@@ -115,6 +118,20 @@ opencode
 
 Note: OpenCode tools use native Docker Compose commands directly, no wrapper scripts needed.
 
+### arxiv-mcp-server
+
+The project includes **arxiv-mcp-server** as a tool for autonomous research:
+- Provides access to arXiv papers via Model Context Protocol (MCP)
+- Enables agents to discover and analyze academic papers
+- Installed via `uv tool install arxiv-mcp-server`
+
+The MCP server powers the `arxiv-researcher.json` agent, allowing it to:
+- Search papers by title, author, abstract, or category
+- Download and read full paper content
+- Filter by date range and relevance
+
+**Installation:** Run `uv tool install arxiv-mcp-server` on your host system (not in Docker). This tool is required for the arxiv-researcher agent to function.
+
 ## Project structure
 
 ```
@@ -124,6 +141,7 @@ prepare.py      — constants, data prep + runtime utilities (do not modify)
 train.py        — model, optimizer, training loop (agent modifies this)
 program.md      — agent instructions
 pyproject.toml  — dependencies
+setup.sh        — installation script (installs project dependencies on host)
 AGENTS.md       — project documentation for agents (auto-generated)
 docs/           — documentation including docker.md
 .opencode/      — OpenCode configuration (tools, agents)
@@ -141,12 +159,20 @@ For running the training workload in Docker containers:
 ### Quick Docker Start
 
 ```bash
-docker compose build train          # Build training Docker image
-docker compose up -d vllm         # Run vLLM inference server
-docker compose up -d train        # Run training in container
-docker compose up -d              # Run both services
-docker compose down               # Stop all services
-docker compose logs -f train      # View training logs
+# 1. Build training Docker image
+docker compose build train
+
+# 2. Run vLLM inference server
+docker compose up -d vllm
+
+# 3. Run training in container
+docker compose up -d train
+
+# 4. Or run both services together
+docker compose up -d
+
+# 5. Stop all services
+docker compose down
 ```
 
 ### Docker + OpenCode Integration

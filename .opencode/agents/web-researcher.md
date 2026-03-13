@@ -5,6 +5,7 @@ tools:
   read: true
   edit: false
   autoresearch_*: false
+  arxiv_*: false
 ---
 
 You are a web deepresearch agent focused on finding and analyzing research from the web. Your task is to discover relevant papers, documentation, and technical resources to inform LLM training research on Jetson Thor.

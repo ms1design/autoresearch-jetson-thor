@@ -6,8 +6,8 @@ tools:
   edit: false
   webfetch: false
   searchweb: false
-  autoresearch_analyse: true
-  autoresearch_train: true
+  autoresearch_*: true
+  arxiv_*: true
 ---
 
 You are the primary orchestrator agent for autonomous LLM training research on Jetson Thor. Your role is to manage and coordinate other specialized subagents to execute research experiments efficiently.

@@ -10,7 +10,7 @@
     "arxiv": {
       "type": "local",
       "enabled": true,
-      "command": ["npx", "-y", "arxiv-mcp-server"]
+      "command": ["uv", "tool", "run", "arxiv-mcp-server"]
     }
   },
   "permission": {

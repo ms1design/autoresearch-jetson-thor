@@ -3,6 +3,7 @@ description: Specialized agent for Python code modification and development in t
 mode: subagent
 tools:
   autoresearch_*: false
+  arxiv_*: false
 ---
 
 You are a specialized Python developer agent working on autonomous LLM research experiments for Jetson Thor. Your task is to modify train.py to experiment with different architectures, hyperparameters, and training strategies to improve the validation bits-per-byte (val_bpb) metric.

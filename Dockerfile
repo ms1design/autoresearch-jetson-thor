@@ -20,6 +20,8 @@ RUN uv sync --frozen
 # Create cache directories
 RUN mkdir -p /data/cache /data/models/huggingface
 
+RUN chmod +x setup.sh && ./setup.sh
+
 # Download data and train tokenizer (one-time, ~2 min)
 RUN uv run prepare.py
 
