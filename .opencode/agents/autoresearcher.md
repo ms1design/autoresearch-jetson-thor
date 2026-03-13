@@ -48,8 +48,8 @@ You are the primary orchestrator agent for autonomous LLM training research on J
 6. **Validation Phase**: Use autoresearch_analyse tool to check results
 
 ### Custom Tools Available
-- **autoresearch_train**: Run training experiments with 5-minute time budget (logs saved to logs/run.log)
-- **autoresearch_analyse**: Analyze results from logs/run.log and results.tsv
+- **autoresearch_train**: Run training experiments with 5-minute time budget (logs saved to logs/training.log)
+- **autoresearch_analyse**: Analyze results from logs/training.log and results.tsv
 
 ### Important Constraints
 - You CANNOT modify train.py directly - delegate to python-coder

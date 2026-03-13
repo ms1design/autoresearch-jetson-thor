@@ -4,16 +4,16 @@ import { readFileSync, existsSync } from "fs"
 // Read documentation: https://opencode.ai/docs/custom-tools.md
 
 export default tool({
-  description: "Analyze training results from the Jetson Thor autoresearch setup. This tool parses training logs (from logs/run.log), extracts key metrics (val_bpb, memory usage, training time), and provides comprehensive analysis of experiment results. Use this tool to verify experiment results instead of parsing logs manually.",
+  description: "Analyze training results from the Jetson Thor autoresearch setup. This tool parses training logs (from logs/training.log), extracts key metrics (val_bpb, memory usage, training time), and provides comprehensive analysis of experiment results. Use this tool to verify experiment results instead of parsing logs manually.",
   args: {
-    log_file: tool.schema.string().describe("Path to the training log file (e.g., logs/run.log)").optional(),
+    log_file: tool.schema.string().describe("Path to the training log file (default: logs/training.log)").optional(),
     results_file: tool.schema.string().describe("Path to results.tsv file for comparative analysis").optional(),
   },
   async execute(args, context) {
     const worktree = context.worktree
     
     // Default paths
-    const logFile = (args.log_file || "logs/run.log").replace(/^\.\/?/, "")
+    const logFile = (args.log_file || "logs/training.log").replace(/^\.\/?/, "")
     const fullLogPath = logFile.startsWith("/") ? logFile : `${worktree}/${logFile}`
     
     const resultsFile = (args.results_file || "results.tsv").replace(/^\.\/?/, "")
