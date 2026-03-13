@@ -22,11 +22,6 @@ DESCRIPTION = os.environ.get("DESCRIPTION", "")
 assert EXPERIMENT_NAME
 assert DESCRIPTION
 
-print(f"experiment_name:  {EXPERIMENT_NAME}")
-print(f"description:      {DESCRIPTION}")
-
-sys.exit(0)
-
 # ---------------------------------------------------------------------------
 # Jetson AGX Thor unified memory limit
 # ---------------------------------------------------------------------------
