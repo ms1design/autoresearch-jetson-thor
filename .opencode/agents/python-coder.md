@@ -2,11 +2,6 @@
 description: Specialized agent for Python code modification and development in the autoresearch project. This agent focuses on modifying train.py for autonomous research experiments while respecting the project constraints.
 mode: subagent
 tools:
-  read: true
-  write: true
-  edit: true
-  bash: true
-  grep: true
   train: false
   analysis: false
 ---
