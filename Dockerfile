@@ -15,7 +15,9 @@ WORKDIR /workspace
 COPY . ./
 
 # Sync dependencies at build time (one-time setup)
-RUN uv sync --frozen
+# Delete the existing uv.lock to regenerate it with correct Linux aarch64 markers
+# This ensures the lock file is created on the target platform (Jetson AGX Thor)
+RUN rm -f uv.lock || true && uv sync && uv lock --upgrade
 
 # Create cache directories
 RUN mkdir -p /data/cache /data/models/huggingface

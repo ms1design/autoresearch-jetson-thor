@@ -3,53 +3,30 @@ name = "autoresearch"
 version = "0.1.0"
 description = "Autonomous pretraining research swarm — Jetson AGX Thor fork"
 readme = "README.md"
-# JetPack 7.x ships Python 3.12. Python 3.13 is not available on-device.
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "matplotlib>=3.10.3",
-    # numpy: sbsa/cu130 torch wheels were compiled with the stable numpy C ABI
-    # (numpy 2.x abi3) starting with torch 2.9+. numpy>=2 is fine with
-    # torch-2.10.0 from pypi.jetson-ai-lab.io/sbsa/cu130.
-    # If you see "NumPy 1.x compiled module" warnings, pin numpy~=1.26.4.
     "numpy>=2.2.6,<3",
     "pandas>=2.3.0",
     "pyarrow>=21.0.0",
     "requests>=2.32.0",
     "rustbpe>=0.1.0",
     "tiktoken>=0.9.0",
-    # torch-2.10.0 is the latest pre-built NVIDIA Jetson AGX Thor wheel
-    # (sbsa/cu130, Python 3.12, aarch64). Resolved from the NVIDIA index
-    # defined in [tool.uv.sources] below.
-    #
-    # Upstream PyTorch stable (download.pytorch.org/whl/cu130) only has
-    # torch==2.9.1 as of March 2026 — 2.10.0 is in the NVIDIA SBSA index only.
-    #
-    # To use the official PyTorch cu130 wheel instead, comment out the
-    # [tool.uv.sources] block below and run:
-    #   pip install torch==2.9.1 --index-url https://download.pytorch.org/whl/cu130
-    "torch==2.10.0",
-    # triton: required for torch.compile (flex_attention) on SM_110
-    # The sbsa/cu130 index provides triton-3.5.0, but it must be explicitly
-    # listed to ensure it's installed (torch's triton dep is optional).
-    "triton==3.5.0",
+    "torch>=2.10.0"
 ]
 
 [tool.uv]
-# Jetson AGX Thor: SM_110, JetPack 7.x, CUDA 13.0, Ubuntu 24.04 (SBSA aarch64).
-# The [tool.uv.sources] block routes torch to the NVIDIA Jetson AI Lab sbsa/cu130
-# index which ships NVPL BLAS + nvshmem optimised wheels for Thor.
-# All other packages resolve from the inherited root/pypi mirror (= PyPI).
-
 [tool.uv.sources]
 torch = [
-    { index = "nvidia-sbsa-cu130" },
+    { index = "pytorch-test-cu130" },
 ]
 
 [[tool.uv.index]]
-# NVIDIA Jetson AI Lab — SBSA / CUDA 13.0 index for Jetson AGX Thor (JetPack 7.x).
-# Contains: torch-2.10.0, triton-3.5.0, torchvision-0.25.0, flash-attn-2.8.4,
-#           flashinfer-python-0.6.4, torchao-0.13.0, vllm-0.16.0+cu130, ...
-# Inherits root/pypi (= PyPI) for everything else (numpy, pandas, requests, …).
 name = "nvidia-sbsa-cu130"
 url = "https://pypi.jetson-ai-lab.io/sbsa/cu130/+simple/"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-test-cu130"
+url = "https://download.pytorch.org/whl/test/cu130/"
 explicit = true

@@ -17,10 +17,6 @@ export HF_TOKEN=${HF_TOKEN:-}
 docker stop train || true
 docker rm train || true
 
-# Build image if needed
-echo "Building training Docker image if needed..."
-docker compose build train
-
 # Launch the training container using docker run directly
 echo "Starting training container..."
 # Run training and capture output to logs/run.log inside the container
