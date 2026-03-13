@@ -30,7 +30,6 @@ If you are new to neural networks, this ["Dummy's Guide"](https://x.com/hooeem/s
 - [Running the agent](#running-the-agent)
 - [OpenCode Integration](#opencode-integration)
 - [Project structure](#project-structure)
-- [Docker Setup](#docker-setup)
 - [Design choices](#design-choices)
 - [Platform support](#platform-support)
 
@@ -59,36 +58,18 @@ If the above commands work, your setup is ready for autonomous research mode.
 
 ## Running the agent
 
-To run training experiments, use Docker Compose:
+For autonomous research experiments, simply run:
 
 ```bash
-# Start vLLM for evaluation (in background)
-docker compose up -d vllm
-
-# Run training in container (5-minute experiments)
-docker compose up train
-
-# Or run both services together
-docker compose up -d
+# Run a single training experiment (~5 min)
+uv run train.py
 ```
 
-For OpenCode integration, simply spin up your Claude/Codex or whatever you want in this repo (and disable all permissions), then you can prompt something like:
-
-```
-Hi have a look at program.md and let's kick off a new experiment! let's do the setup first.
-```
-
-The `program.md` file is essentially a super lightweight "skill".
+The `program.md` file contains instructions for autonomous research agents. You can modify it to guide your agent's experiments.
 
 ## OpenCode Integration
 
 This project is integrated with [OpenCode](https://opencode.ai/), an AI coding agent that enables autonomous LLM training research.
-
-**[docs/opencode.md](docs/opencode.md)** — Complete OpenCode integration guide with:
-
-- **Custom Tools**: Train experiments, result analysis
-- **Subagents**: Python coder and arXiv researcher for autonomous research
-- **Agent Collaboration**: python-coder + arxiv-researcher workflow
 
 ### Quick OpenCode Start
 
@@ -108,15 +89,13 @@ opencode
 
 ### Custom Tools (`.opencode/tools/`)
 
-1. **autoresearch_train**: Run training experiments (5-minute time budget) using `docker compose`
+1. **autoresearch_train**: Run training experiments (5-minute time budget)
 2. **autoresearch_analyse**: Analyze results from run.log and results.tsv
 
 ### Available Subagents (`.opencode/agents/`)
 
 1. **python-coder.json**: Modify train.py for autonomous research experiments
 2. **arxiv-researcher.json**: Find and analyze academic papers from arXiv.org
-
-Note: OpenCode tools use native Docker Compose commands directly, no wrapper scripts needed.
 
 ### arxiv-mcp-server
 
@@ -130,57 +109,27 @@ The MCP server powers the `arxiv-researcher.json` agent, allowing it to:
 - Download and read full paper content
 - Filter by date range and relevance
 
-**Installation:** Run `uv tool install arxiv-mcp-server` on your host system (not in Docker). This tool is required for the arxiv-researcher agent to function.
+**Installation:** Run `uv tool install arxiv-mcp-server` on your host system. This tool is required for the arxiv-researcher agent to function.
 
 ## Project structure
 
 ```
-scripts/
-├── train.sh      — Launch training container directly with docker run
 prepare.py      — constants, data prep + runtime utilities (do not modify)
 train.py        — model, optimizer, training loop (agent modifies this)
 program.md      — agent instructions
 pyproject.toml  — dependencies
 setup.sh        — installation script (installs project dependencies on host)
 AGENTS.md       — project documentation for agents (auto-generated)
-docs/           — documentation including docker.md
 .opencode/      — OpenCode configuration (tools, agents)
 ```
-
-## Docker Setup
-
-For running the training workload in Docker containers:
-
-**[docs/docker.md](docs/docker.md)** — Complete Docker setup guide with:
-- Docker Compose configuration for vLLM inference + training services
-- Pre-built Docker image with synced dependencies
-- Quick start examples
-
-### Quick Docker Start
-
-```bash
-# 1. Build training Docker image
-docker compose build train
-
-# 2. Run vLLM inference server
-docker compose up -d vllm
-
-# 3. Run training in container
-docker compose up -d train
-
-# 4. Or run both services together
-docker compose up -d
-
-# 5. Stop all services
-docker compose down
+prepare.py      — constants, data prep + runtime utilities (do not modify)
+train.py        — model, optimizer, training loop (agent modifies this)
+program.md      — agent instructions
+pyproject.toml  — dependencies
+setup.sh        — installation script (installs project dependencies on host)
+AGENTS.md       — project documentation for agents (auto-generated)
+.opencode/      — OpenCode configuration (tools, agents)
 ```
-
-### Docker + OpenCode Integration
-
-The Docker setup integrates seamlessly with OpenCode for autonomous research:
-- **train container**: Pre-syncs dependencies at build time for fast experiments
-- **vllm container**: Serves models for evaluation
-- **Both services**: Can run simultaneously for end-to-end workflows
 
 ## Design choices
 

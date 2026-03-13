@@ -5,13 +5,12 @@ Usage: source .venv/bin/activate && python train.py
 """
 
 import os
-# Jetson AGX Thor (SM_110) uses a unified CPU/GPU memory pool.
-# expandable_segments is incompatible with cudaMallocManaged; disable it.
-# cudaMallocAsync is the correct allocator for unified-memory Jetson platforms.
+
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "backend:cudaMallocAsync,expandable_segments:False"
 os.environ["HF_HUB_DISABLE_PROGRESS_BARS"] = "1"
-# Triton JIT needs ptxas. JetPack 7.x installs CUDA under /usr/local/cuda.
 os.environ["TRITON_PTXAS_PATH"] = "/usr/local/cuda/bin/ptxas"
+os.environ["TRITON_PTXAS_BLACKWELL_PATH"] = "/usr/local/cuda/bin/ptxas"
+os.environ["TORCH_CUDA_ARCH_LIST"] = "11.0a"
 
 # ---------------------------------------------------------------------------
 # Jetson AGX Thor unified memory limit

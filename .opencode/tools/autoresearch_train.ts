@@ -8,7 +8,7 @@ import { readFileSync, existsSync } from "fs"
 const execAsync = promisify(exec)
 
 export default tool({
-  description: "Run training experiments with the Jetson Thor autoresearch setup. This tool executes the training script for a fixed 5-minute time budget and captures the results. Use this tool instead of running docker commands directly. Output is automatically saved to logs/run.log for analysis.",
+  description: "Run training experiments with the Jetson Thor autoresearch setup. This tool executes the training script for a fixed 5-minute time budget and captures the results. Use this tool to run uv-based training experiments. Output is automatically saved to logs/run.log for analysis.",
   args: {
     experiment_name: tool.schema.string().describe("Name of the experiment for logging purposes"),
     description: tool.schema.string().describe("Description of what changes or parameters are being tested in this experiment"),
@@ -17,10 +17,10 @@ export default tool({
     const worktree = context.worktree
     
     return new Promise((resolve) => {
-      const trainScript = `${worktree}/scripts/train.sh`
-      const proc = exec(trainScript, {
+      const proc = exec("uv run train.py", {
         cwd: worktree,
         maxBuffer: 1024 * 1024 * 1024, // 1GB buffer
+        env: { ...process.env }
       })
       
       let stdout = ""
