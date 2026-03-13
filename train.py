@@ -14,6 +14,13 @@ os.environ["TRITON_PTXAS_PATH"] = "/usr/local/cuda/bin/ptxas"
 os.environ["TRITON_PTXAS_BLACKWELL_PATH"] = "/usr/local/cuda/bin/ptxas"
 os.environ["TORCH_CUDA_ARCH_LIST"] = "11.0a"
 
+# Exported from train.sh
+EXPERIMENT_NAME = os.environ.get("EXPERIMENT_NAME", "")
+DESCRIPTION = os.environ.get("DESCRIPTION", "")
+
+assert EXPERIMENT_NAME
+assert DESCRIPTION
+
 # ---------------------------------------------------------------------------
 # Jetson AGX Thor unified memory limit
 # ---------------------------------------------------------------------------
@@ -831,3 +838,6 @@ print(f"total_tokens_M:   {total_tokens / 1e6:.1f}")
 print(f"num_steps:        {step}")
 print(f"num_params_M:     {num_params / 1e6:.1f}")
 print(f"depth:            {DEPTH}")
+print(f"---")
+print(f"experiment_name:  {EXPERIMENT_NAME}")
+print(f"description:      {DESCRIPTION}")

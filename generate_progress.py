@@ -5,8 +5,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import sys
 
-results_file = "/home/narandill/autoresearch-jetson-thor/results.tsv"
-progress_png = "/home/narandill/autoresearch-jetson-thor/progress.png"
+results_file = "results.tsv"
+progress_png = "progress.png"
 
 df = pd.read_csv(results_file, sep="\t")
 df["val_bpb"] = pd.to_numeric(df["val_bpb"], errors="coerce")
