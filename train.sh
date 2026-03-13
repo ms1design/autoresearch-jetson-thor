@@ -44,8 +44,8 @@ sudo -n sysctl -w vm.drop_caches=3 > /dev/null 2>&1
 # Run training, show output AND capture it to log file
 set +e
 if [ "$QUIET" = true ]; then
-    # Suppress all output when --quiet flag is set
-    uv run train.py > /dev/null 2>&1
+    # When quiet: output ONLY to log file, NOT to stdout
+    uv run train.py 2>&1 | tee -a "$LOG_PATH" > /dev/null
     TRAIN_EXIT_CODE=$?
 else
     # Run with output to both console and log file
