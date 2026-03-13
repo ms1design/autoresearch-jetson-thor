@@ -2,7 +2,7 @@ import { tool } from "@opencode-ai/plugin"
 import path from "path"
 
 export default tool({
-  description: "Analyze training results from the Jetson Thor autoresearch setup. This tool parses training logs, extracts key metrics (val_bpb, memory usage, training time), and provides a comprehensive analysis of experiment results.",
+  description: "Analyze training results from the Jetson Thor autoresearch setup. This tool parses training logs, extracts key metrics (val_bpb, memory usage, training time), and provides a comprehensive analysis of experiment results. Use this tool to verify experiment results instead of parsing logs manually.",
   args: {
     log_file: tool.schema.string().describe("Path to the training log file (e.g., run.log)").optional(),
     results_file: tool.schema.string().describe("Path to results.tsv file for comparative analysis").optional(),

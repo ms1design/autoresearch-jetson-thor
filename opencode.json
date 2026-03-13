@@ -12,5 +12,8 @@
       "enabled": true,
       "command": ["npx", "-y", "arxiv-mcp-server"]
     }
+  },
+  "permission": {
+    "bash": "allow"
   }
 }

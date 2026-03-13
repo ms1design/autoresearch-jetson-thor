@@ -56,7 +56,20 @@ If the above commands work, your setup is ready for autonomous research mode.
 
 ## Running the agent
 
-Simply spin up your Claude/Codex or whatever you want in this repo (and disable all permissions), then you can prompt something like:
+To run training experiments, use Docker Compose:
+
+```bash
+# Start vLLM for evaluation (in background)
+docker compose up -d vllm
+
+# Run training in container (5-minute experiments)
+docker compose up train
+
+# Or run both services together
+docker compose up -d
+```
+
+For OpenCode integration, simply spin up your Claude/Codex or whatever you want in this repo (and disable all permissions), then you can prompt something like:
 
 ```
 Hi have a look at program.md and let's kick off a new experiment! let's do the setup first.
@@ -92,24 +105,28 @@ opencode
 
 ### Custom Tools (`.opencode/tools/`)
 
-1. **train**: Run training experiments (5-minute time budget)
+1. **train**: Run training experiments (5-minute time budget) using `docker compose`
 2. **analysis**: Analyze results from run.log and results.tsv
-3. **build-image**: Build Docker images with pre-synced dependencies
+3. **build-image**: Build Docker images with pre-synced dependencies using `docker compose build`
 
 ### Available Subagents (`.opencode/agents/`)
 
 1. **python-coder.json**: Modify train.py for autonomous research experiments
 2. **arxiv-researcher.json**: Find and analyze academic papers from arXiv.org
 
+Note: OpenCode tools use native Docker Compose commands directly, no wrapper scripts needed.
+
 ## Project structure
 
 ```
+scripts/
+├── train.sh      — Launch training container directly with docker run
 prepare.py      — constants, data prep + runtime utilities (do not modify)
 train.py        — model, optimizer, training loop (agent modifies this)
 program.md      — agent instructions
 pyproject.toml  — dependencies
 AGENTS.md       — project documentation for agents (auto-generated)
-docs/           — documentation including opencode.md
+docs/           — documentation including docker.md
 .opencode/      — OpenCode configuration (tools, agents)
 ```
 
@@ -118,18 +135,19 @@ docs/           — documentation including opencode.md
 For running the training workload in Docker containers:
 
 **[docs/docker.md](docs/docker.md)** — Complete Docker setup guide with:
-- Single command launcher (`./run.sh`)
-- vLLM inference + training services
+- Docker Compose configuration for vLLM inference + training services
 - Pre-built Docker image with synced dependencies
 - Quick start examples
 
 ### Quick Docker Start
 
 ```bash
-./run.sh build          # Build training Docker image
-./run.sh train          # Run training in container
-./run.sh vllm           # Run vLLM inference server
-./run.sh both           # Run both services
+docker compose build train          # Build training Docker image
+docker compose up -d vllm         # Run vLLM inference server
+docker compose up -d train        # Run training in container
+docker compose up -d              # Run both services
+docker compose down               # Stop all services
+docker compose logs -f train      # View training logs
 ```
 
 ### Docker + OpenCode Integration

@@ -13,7 +13,7 @@ This directory contains the Docker configuration for running both vLLM inference
 ### Build the Training Image
 
 ```bash
-./run.sh build
+docker compose build train
 ```
 
 This builds the training Docker image with all dependencies synced.
@@ -22,31 +22,42 @@ This builds the training Docker image with all dependencies synced.
 
 **Start only vLLM inference:**
 ```bash
-./run.sh vllm
+docker compose up -d vllm
 ```
 
-**Start only training:**
+**Start only training (using direct docker run):**
 ```bash
-./run.sh train                # Runs train.py
-./run.sh train prepare.py     # Runs prepare.py
+./scripts/train.sh                # Runs train.py
+./scripts/train.sh prepare.py     # Runs prepare.py
 ```
 
 **Start both services:**
 ```bash
-./run.sh both
+docker compose up -d
 ```
 
 ### Stop Services
 
 ```bash
-./run.sh stop
+docker compose down
 ```
 
-## Docker Compose
+### View Logs
+
+```bash
+docker compose logs -f
+docker compose logs -f train    # View only training logs
+docker compose logs -f vllm     # View only vLLM logs
+```
+
+**Note**: The `scripts/train.sh` script uses `docker run` directly for simpler management and faster iteration.
+
+## Docker Compose Commands
 
 ### Build
 ```bash
 docker compose build train
+docker compose build --no-cache train  # Force rebuild
 ```
 
 ### Start vLLM
@@ -56,21 +67,36 @@ docker compose up -d vllm
 
 ### Start Training
 ```bash
-docker compose up train
+docker compose up -d train
+docker compose up train           # Run in foreground
 ```
 
 ### View Logs
 ```bash
 docker compose logs -f
+docker compose logs -f train      # Train container only
+docker compose logs -f vllm       # vLLM container only
+```
+
+### Stop Services
+```bash
+docker compose down               # Stop all services
+docker compose down vllm          # Stop only vLLM
+docker compose down train         # Stop only training
+```
+
+### Rebuild and Start
+```bash
+docker compose up -d --build      # Rebuild and start all
+docker compose up -d --build vllm # Rebuild and start vLLM only
 ```
 
 ## Environment Variables
 
 ### vLLM
-- `VLLM_MAIN_SERVER_PORT` - Port for vLLM API (default: 8000)
+- `VLLM_PORT` - Port for vLLM API (default: 8000)
 - `HF_TOKEN` - HuggingFace access token
-- `MAIN_LLM_MODEL` - Model to serve (default: Qwen/Qwen3-Coder-Next)
-- `MAIN_LLM_MODEL_QUANT` - Quantized model path (default: RedHatAI/Qwen3-Coder-Next-NVFP4)
+- `LLM_MODEL` - Model to serve (default: Qwen/Qwen3-Coder-Next)
 
 ### Training
 - `TRAIN_COMMAND` - Command to run in container (default: train.py)
@@ -79,6 +105,8 @@ docker compose logs -f
 ## Directory Structure
 
 ```
+scripts/
+├── train.sh      — Launch training container directly with docker run
 data/
 ├── models/         # Model storage
 ├── vllm/           # vLLM specific caches

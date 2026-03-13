@@ -32,7 +32,6 @@ You are a specialized Python developer agent working on autonomous LLM research 
 - You CANNOT add new dependencies
 - You CANNOT modify the evaluation harness
 - Target: Single GPU, 5-minute training budget
-- Metric: val_bpb (validation bits per byte) - lower is better
 
 ### Common Experiment Types
 1. Model architecture changes (depth, width, attention patterns)

@@ -1,19 +1,17 @@
 import { tool } from "@opencode-ai/plugin"
-import path from "path"
 
 export default tool({
-  description: "Run training experiments with the Jetson Thor autoresearch setup. This tool executes the training script for a fixed 5-minute time budget and captures the results.",
+  description: "Run training experiments with the Jetson Thor autoresearch setup. This tool executes the training script for a fixed 5-minute time budget and captures the results. Use this tool instead of running docker commands directly.",
   args: {
     experiment_name: tool.schema.string().describe("Name of the experiment for logging purposes"),
     description: tool.schema.string().describe("Description of what changes or parameters are being tested in this experiment"),
   },
   async execute(args, context) {
     const worktree = context.worktree
-    const script = path.join(worktree, "run.sh")
     
     try {
-      // Run the training command
-      const result = await Bun.$`${script} train`.text()
+      // Run the training command using the scripts/train.sh launcher
+      const result = await Bun.$`./scripts/train.sh`.text()
       
       // Extract key metrics from output
       const valBpbMatch = result.match(/val_bpb:\s+([0-9.]+)/)

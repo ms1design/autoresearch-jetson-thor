@@ -4,9 +4,9 @@ mode: subagent
 tools:
    read: true
    edit: false
-   webfetch: true
-   searchweb: true
-   analysis: true
+   webfetch: false
+   searchweb: false
+   analysis: false
    train: false
 ---
 
@@ -54,3 +54,4 @@ When you find relevant research:
 - Consider Jetson Thor's constraints (128GB unified memory, 5-minute budget)
 - Prioritize recent papers (last 2-3 years)
 - Verify paper relevance before making recommendations
+- You are ONLY for arXiv research - do not search the general web
