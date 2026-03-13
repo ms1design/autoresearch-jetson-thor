@@ -2,6 +2,8 @@ import { tool } from "@opencode-ai/plugin"
 import { exec } from "child_process"
 import { promisify } from "util"
 
+// Read documentation: https://opencode.ai/docs/custom-tools.md
+
 const execAsync = promisify(exec)
 
 export default tool({

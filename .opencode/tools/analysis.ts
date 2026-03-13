@@ -1,6 +1,8 @@
 import { tool } from "@opencode-ai/plugin"
 import { readFileSync, existsSync } from "fs"
 
+// Read documentation: https://opencode.ai/docs/custom-tools.md
+
 export default tool({
   description: "Analyze training results from the Jetson Thor autoresearch setup. This tool parses training logs (from logs/run.log), extracts key metrics (val_bpb, memory usage, training time), and provides comprehensive analysis of experiment results. Use this tool to verify experiment results instead of parsing logs manually.",
   args: {
