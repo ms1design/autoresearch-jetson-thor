@@ -624,7 +624,7 @@ FINAL_LR_FRAC = 1.0  # final LR as fraction of initial (no decay)
 DEPTH = 8  # number of transformer layers
 # 126 GB unified pool: safe baseline is 128. Raise to 256 for larger sweeps.
 # Reduced to 64 to fit within 50GB VRAM with gradient checkpointing (divisor of 256)
-DEVICE_BATCH_SIZE = 64  # device batch size - optimal value
+DEVICE_BATCH_SIZE = 128  # device batch size - optimal value
 
 # ---------------------------------------------------------------------------
 # Setup: tokenizer, model, optimizer, dataloader

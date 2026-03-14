@@ -3,8 +3,8 @@
 set -euo pipefail
 
 # Parse arguments
-EXPERIMENT_NAME=""
-DESCRIPTION=""
+EXPERIMENT_NAME="test"
+DESCRIPTION="test"
 QUIET=false
 
 while [[ $# -gt 0 ]]; do
