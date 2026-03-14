@@ -325,6 +325,10 @@ class GPT(nn.Module):
         # Scale LR ∝ 1/√dmodel (tuned at 768 dim)
         dmodel_lr_scale = (model_dim / 768) ** -0.5
         print(f"Scaling AdamW LRs by 1/sqrt({model_dim}/768) = {dmodel_lr_scale:.6f}")
+
+        # Flat LR baseline - no layer-wise multipliers, all transformer layers use same LR
+        print("Flat LR baseline: no layer-wise LR multipliers")
+
         param_groups = [
             dict(
                 kind="adamw",
@@ -367,19 +371,22 @@ class GPT(nn.Module):
                 weight_decay=0.0,
             ),
         ]
+
+        # Shape-based grouping for Muon: all params in a group must have same shape
         for shape in sorted({p.shape for p in matrix_params}):
             group_params = [p for p in matrix_params if p.shape == shape]
             param_groups.append(
                 dict(
                     kind="muon",
                     params=group_params,
-                    lr=matrix_lr,
+                    lr=matrix_lr * dmodel_lr_scale,
                     momentum=0.95,
                     ns_steps=5,
                     beta2=0.95,
                     weight_decay=weight_decay,
                 )
             )
+
         optimizer = MuonAdamW(param_groups)
         for group in optimizer.param_groups:
             group["initial_lr"] = group["lr"]
@@ -603,21 +610,21 @@ WINDOW_PATTERN = "SSSL"  # sliding window pattern: L=full, S=half context
 
 # Optimization
 TOTAL_BATCH_SIZE = 2**19  # ~524K tokens per optimizer step
-EMBEDDING_LR = 0.6  # learning rate for token embeddings (Adam)
-UNEMBEDDING_LR = 0.004  # learning rate for lm_head (Adam)
-MATRIX_LR = 0.04  # learning rate for matrix parameters (Muon)
-SCALAR_LR = 0.5  # learning rate for per-layer scalars (Adam)
+EMBEDDING_LR = 0.9  # learning rate for token embeddings (Adam)
+UNEMBEDDING_LR = 0.008  # learning rate for lm_head (Adam)
+MATRIX_LR = 0.06  # learning rate for matrix parameters (Muon)
+SCALAR_LR = 0.5  # learning rate for per-layer scalars (Adam) - final optimal value
 WEIGHT_DECAY = 0.2  # cautious weight decay for Muon
-ADAM_BETAS = (0.8, 0.95)  # Adam beta1, beta2
-WARMUP_RATIO = 0.0  # fraction of time budget for LR warmup
-WARMDOWN_RATIO = 0.5  # fraction of time budget for LR warmdown
-FINAL_LR_FRAC = 0.0  # final LR as fraction of initial
+ADAM_BETAS = (0.8, 0.95)  # Adam beta1, beta2 - optimal values
+WARMUP_RATIO = 0.0  # fraction of time budget for LR warmup (no warmup)
+WARMDOWN_RATIO = 0.0  # fraction of time budget for LR warmdown (no warmdown)
+FINAL_LR_FRAC = 1.0  # final LR as fraction of initial (no decay)
 
 # Model size
 DEPTH = 8  # number of transformer layers
 # 126 GB unified pool: safe baseline is 128. Raise to 256 for larger sweeps.
 # Reduced to 64 to fit within 50GB VRAM with gradient checkpointing (divisor of 256)
-DEVICE_BATCH_SIZE = 64
+DEVICE_BATCH_SIZE = 64  # device batch size - optimal value
 
 # ---------------------------------------------------------------------------
 # Setup: tokenizer, model, optimizer, dataloader
