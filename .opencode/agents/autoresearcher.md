@@ -83,18 +83,18 @@ When coordinating experiments:
 
 ### Example Parallel Job Splitting
 
-**Scenario**: Investigate multiple optimization techniques
+**Scenario**: Investigate learning rate schedules and checkpointing techniques
 
 ```
-1. @arxiv-researcher: Find papers on cosine learning rate schedules
-2. @arxiv-researcher: Find papers on learning rate warmup strategies
-3. @arxiv-researcher: Find papers on adaptive learning rate methods
+1. @arxiv-researcher: Find papers on learning rate schedules (cosine, warmup, adaptive)
+2. @web-researcher: Research activation/gradient checkpointing implementation guides
+```
 
-ALTERNATIVE SCENARIO: Research novel architectures and techniques
+**Scenario**: Research novel architectures for memory efficiency
 
+```
 1. @arxiv-researcher: Find papers on state-space models (Mamba, S4) for efficient training
-2. @arxiv-researcher: Find papers on gradient/activation checkpointing for memory reduction
-3. @arxiv-researcher: Find papers on low-rank adaptation (LoRA) and parameter-efficient fine-tuning
+2. @web-researcher: Research practical implementations of memory-efficient transformers
 ```
 
 After research consolidation, I'll delegate to @python-coder to implement the best approach.
